@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zxx">
+{%  load static %}
+<head>
+    <title>Yashanpreet Singh</title>
+    <!-- Meta tag Keywords -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8"/>
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+/* Button used to open the chat form - fixed at the bottom of the page */
+.open-button {
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+}
+
+/* The popup chat - hidden by default */
+.chat-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+    z-index: 10000;
+}
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+/* Full-width textarea */
+.form-container textarea {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  resize: none;
+  min-height: 200px;
+}
+
+/* When the textarea gets focus, do something */
+.form-container textarea:focus {
+  background-color: #ddd;
+  outline: none;
+}
+/* Set a style for the submit/send button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+</style>
+<script>
+        var ans="";
+        var count=0;
+        var divid=15;
+            function scroll_to_li()
+{
+$('#yourUL').animate({
+     scrollTop: $('#yourUL li:nth-child('+count+')').position().top
+}, 'slow');
+}
+    function send(){
+        var msg=document.getElementById('myInput').value;
+        ans+="<div ><p style=\"color:blue\">"+msg+"</p></div>";
+          document.getElementById('chat').innerHTML=ans;
+         var xml = new XMLHttpRequest();
+            xml.onreadystatechange=function () {
+                if (this.readyState==4 && this.status==200)
+                {
+                    var ar = this.responseText;
+                    count=count+1;
+                    ans+="<div  id='div"+count+"'><p style=\"color:black\">"+ar+"</p></div>";
+                    ans+="<a href=\"#\" style=\"background-color: gainsboro;color: black\"  onclick=\"next('')\">Aything else?</a>";
+                    document.getElementById('chat').innerHTML=ans;
+                   var target = document.getElementById('div'+count).offsetTop;
+                   document.getElementById('chat').scrollTop = target;
+                }
+            };
+            xml.open('GET','/messageReply?msg='+msg,true);
+            xml.send();
+    }
+    function next(){
+                document.getElementById('chat').innerHTML="";
+            document.getElementById('chat').innerHTML="  <a href=\"#\" style=\"background-color: gainsboro;color: black\"  onclick=\"setvalue('hi')\">hi</a><br>\n" +
+       "          <a href=\"#\" style=\"background-color: gainsboro;color: black\" onclick=\"setvalue('thank you')\">thank you</a><br>\n" +
+       "          <a href=\"#\" style=\"background-color: gainsboro;color: black\" onclick=\"setvalue('credit card')\" >credit card</a><br>";
+    }
+    function setvalue(v){
+     document.getElementById('myInput').value=v;
+     send();
+    }
+    function openForm() {
+  document.getElementById("myForm").style.display = "block";
+  document.getElementById('chat').innerHTML="  <a href=\"#\" style=\"background-color: gainsboro;color: black\"  onclick=\"setvalue('hi')\">hi</a><br>\n" +
+       "          <a href=\"#\" style=\"background-color: gainsboro;color: black\" onclick=\"setvalue('thank you')\">thank you</a><br>\n" +
+       "          <a href=\"#\" style=\"background-color: gainsboro;color: black\" onclick=\"setvalue('credit card')\" >credit card</a><br>";
+}
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+   document.getElementById('chat').innerHTML="";
+   document.getElementById('myInput').value="";
+   ans="";
+}
+</script>
+</head>
+<body>
+<div style="background-color: #f9aa57;height: 1200px;">
+</div>
+
+{#icon div start#}
+<div style=" position: fixed;z-index: 1000;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;padding: 16px 20px;
+  border: none;
+  cursor: pointer;">
+    <img onclick="openForm()" src="{% static 'support_woman-512.png' %}" width="50" height="50"><br><p style="color: white;background-color: black;margin-top: 1px;width: 130px;">May I Help You?</p>
+</div>
+{#icon div end#}
+{#chaT div start#}
+<div class="chat-popup" id="myForm">
+  <form action="#" class="form-container">
+    <h1>Chat</h1>
+    <label for="msg"><b>Message</b></label>
+      <div id="chat" style="overflow-y:scroll; height:200px;">
+
+      </div>
+     Enter Message <input type="text" id="myInput" class="form-control" autofocus style="width: 100%">
+    <button style="margin-top: 2px;" id="myBtn" type="button"  class="btn" onclick="send()">Send</button>
+    <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+      <script>
+var input = document.getElementById("myInput");
+input.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+   event.preventDefault();
+   document.getElementById("myBtn").click();
+  }
+});
+</script>
+  </form>
+</div>
+{#chat div start#}
+</body>
+</html>
